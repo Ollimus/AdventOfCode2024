@@ -8,17 +8,16 @@ namespace Shared;
 
 public interface IFileReader
 {
-    IEnumerable<string> Read();
+    IEnumerable<string> Read(string path = "", string fileName = "");
 }
 
 public class FileReader : IFileReader
 {
-    public readonly string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
+    public string FilePath { get; init; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory);
 
-    public IEnumerable<string> Read(string path = "")
-        => File.ReadAllText
-
-
-    string[] input = File.ReadAllLines(FilePath.Combine(AppDomain.CurrentDomain.BaseDirectory, "PuzzleInput.dat"));
-
+    public IEnumerable<string> Read(string path = "", string fileName = "PuzzleInput.dat")
+    {
+        var filepath = string.IsNullOrEmpty(path) ? FilePath : path;
+        return File.ReadLines(Path.Combine(filepath, "PuzzleInput.dat"));
+    }
 }
