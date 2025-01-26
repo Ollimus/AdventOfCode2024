@@ -1,66 +1,62 @@
 ﻿using Shared;
-using System.IO;
 
-var file = new FileReader().Read();
+/*
+ * Task description within README.md
+*/
 
-//Part1();
-Part2();
+var input = new FileReader().Read()
+.Aggregate(
+    (First: new List<int>(), Second: new List<int>()),
+    (collections, nextValue) =>
+    {
+        var split = nextValue.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        collections.First.Add(int.Parse(split[0]));
+        collections.Second.Add(int.Parse(split[1]));
+        return collections;
+    });
+
+var processor = new InputProcessor(input.First, input.Second);
+processor.Part1();
+processor.Part2();
 
 Console.ReadKey();
 
-
-void Part2()
+public class InputProcessor
 {
-    var input = file.Select(line => line.Split(' ', StringSplitOptions.RemoveEmptyEntries)).ToList();
+    private ICollection<int> FirstCollection { get; set; }
+    private ICollection<int> SecondCollection { get; set; }
 
-    List<int> firstColumn = new();
-    List<int> secondColumn = new();
-    int similarityScore = 0;
-
-    foreach (var line in input)
+    public InputProcessor(ICollection<int> firstList, ICollection<int> secondList)
     {
-        Console.WriteLine($"{line[0]} {line[1]}");
-
-        firstColumn.Add(int.Parse(line[0]));
-        secondColumn.Add(int.Parse(line[1]));
+        SecondCollection = secondList;
+        FirstCollection = firstList;
     }
 
-    foreach (var number in firstColumn)
+    public void Part1()
     {
-        var count = secondColumn.Count(x => x == number);
-        similarityScore += count * number;
+        // Order them from smallest to largest since we always compare smallest value from left collection to the right's.
+        FirstCollection = FirstCollection.OrderBy(x => x).ToList();
+        SecondCollection = SecondCollection.OrderBy(x => x).ToList();
+
+        // 'Zip' through the collection and get absolute value and add it all together.
+        // Absolute value is a must since comparison can result in both negative and positive numbers.
+        var result = FirstCollection.Zip(SecondCollection, (x, y) => Math.Abs(x - y))
+            .Sum();
+
+        Console.WriteLine($"Result is: {result}");
     }
 
-    Console.WriteLine("Similarity Score: " + similarityScore);
-}
-
-
-void Part1()
-{
-    var input = file.Select(line => line.Split(' ', StringSplitOptions.RemoveEmptyEntries)).ToList();
-
-    List<int> firstColumn = new();
-    List<int> secondColumn = new();
-    int distance = 0;
-
-    foreach (var line in input)
+    public void Part2()
     {
-        Console.WriteLine($"{line[0]} {line[1]}");
+        /*
+         * Gets how many times element in 1st collection appears in 2nd collection and multiplies it by the first's element.
+         * Then sums all together. 
+        */
+        var result = FirstCollection
+            .Select(x => SecondCollection.Count(y => y == x) * x)
+            .Sum();
 
-        firstColumn.Add(int.Parse(line[0]));
-        secondColumn.Add(int.Parse(line[1]));
+        Console.WriteLine($"Result is: {result}");
     }
-
-    var sortedFirst = firstColumn.OrderBy(x => x).ToList();
-    var sortedSecond = secondColumn.OrderBy(x => x).ToList();
-
-    for (int i = 0; i < sortedFirst.Count; i++)
-    {
-        var x = sortedFirst[i];
-        var y = sortedSecond[i];
-
-        distance += Math.Abs(x - y);
-    }
-
-    Console.WriteLine("Total distance: " + distance);
 }
