@@ -15,26 +15,30 @@ public class Day2
     {
         var input = new FileReader().Read()
         .Select(x => x.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-            .Select(int.Parse))
-            .ToList()
+            .Select(int.Parse)
+            .ToList())
         .ToList();
 
-        var result = input.Select(x =>
+        var result = input.Select(rows =>
         {
-            // if first is lower than second, it is ascending from the start. 
-            var validator = new ValidationClass(2, x.First() < x.Skip(1).First());
+            var isAscending = rows.Zip(rows.Skip(1), (x, y) => x <= y).All(x => x);
+            var isDescending = rows.Zip(rows.Skip(1), (x, y) => x >= y).All(x => x);
 
-            x.Aggregate((firstValue: x.First(), collection: x, validation: validator), (acc, nextValue) =>
+            if (!isAscending && !isDescending)
+                return 0;
+
+
+            var isWithinParameters = rows.Zip(rows.Skip(1), (x, y) =>
             {
+                var difference = Math.Abs(x - y);
+                return (difference >= 1 && difference <= 3);
+            }).All(x => x);
 
+            return isWithinParameters ? 1 : 0;
+        })
+            .Sum();
 
-                return (nextValue, acc.collection, acc.validation);
-            });
-
-            return x;
-        }).ToList();
-
-
+        Console.WriteLine("Result is: " + result);
     }
 
     public void Part2()
