@@ -45,7 +45,12 @@ public class Day2
         Console.WriteLine("Result is: " + result);
     }
 
+
+    /*
+     * Not completed due it annoying me :) 
+    */
     public void Part2()
     {
+
     }
 }
