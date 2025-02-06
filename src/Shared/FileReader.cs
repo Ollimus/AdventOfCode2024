@@ -9,6 +9,7 @@ namespace Shared;
 public interface IFileReader
 {
     IEnumerable<string> Read(string path = "", string fileName = "");
+    string ReadAllText(string path = "", string fileName = "PuzzleInput.dat");
 }
 
 public class FileReader : IFileReader
@@ -19,5 +20,11 @@ public class FileReader : IFileReader
     {
         var filepath = string.IsNullOrEmpty(path) ? FilePath : path;
         return File.ReadLines(Path.Combine(filepath, "PuzzleInput.dat"));
+    }
+
+    public string ReadAllText(string path = "", string fileName = "PuzzleInput.dat")
+    {
+        var filepath = string.IsNullOrEmpty(path) ? FilePath : path;
+        return File.ReadAllText(Path.Combine(filepath, "PuzzleInput.dat"));
     }
 }
