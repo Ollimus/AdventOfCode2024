@@ -31,7 +31,7 @@ public class Day3
                      return (isParsed) ? result : 0;
                  })
                  .ToList())
-             .Select(innerList => innerList.Aggregate((acc, num) => { Console.WriteLine(acc + " " + num); return acc * num; })) //Starting value of one, multiply the first value with second.
+             .Select(innerList => innerList.Aggregate((acc, num) => acc * num)) //Starting value of one, multiply the first value with second.
              .ToList()
              .Sum(); // Sum it all up.
 
@@ -47,10 +47,11 @@ public class Day3
         var regex = new Regex(@"mul\((\d+,\d+)\)|do\(\)|don't\(\)");
         var extractedStrings = ExtractValues(new FileReader().ReadAllText(), regex);
 
+
+
         //Console.WriteLine("Result is: " + result);
     }
 
-    // Regex still taken off the internet :)
     static List<string> ExtractValues(string input, Regex regex)
     {
         List<string> values = []; // Just trying to remember how to use the new way of creating lists.
