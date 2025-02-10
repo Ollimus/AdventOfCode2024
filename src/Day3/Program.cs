@@ -3,9 +3,10 @@
 */
 
 using Shared;
+using System.Text.RegularExpressions;
 
 new Day3().Part1();
-
+new Day3().Part2();
 
 Console.ReadKey();
 
@@ -15,55 +16,52 @@ public class Day3
 {
     public void Part1()
     {
-       var extractedStrings = ExtractAllBetween(new FileReader().ReadAllText(), "mul(", ")");
+        // Find each instances of:
+        // mul({value1}, {value2})
+        var regex = new Regex(@"mul\((\d+,\d+)\)");
+        var extractedStrings = ExtractValues(new FileReader().ReadAllText(), regex);
 
-       var result = extractedStrings
-            .Select(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(x => 
-                {
-                    // If can't be parsed (data in incorrect format), return 0 so the next part will be x * 0 in these edge cases.
-                    var isParsed = int.TryParse(x, out var result);
+        var result = extractedStrings
+             .Select(x => x.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                 .Select(x =>
+                 {
+                     // If can't be parsed (data in incorrect format), return 0 so the next part will be x * 0 in these edge cases.
+                     var isParsed = int.TryParse(x, out var result);
 
-                    return (isParsed) ? result : 0;
-                })
-                .ToList())
-            .Select(innerList => innerList.Aggregate(1, (acc, num) => acc * num)) //Starting value of one, multiply the first value with second.
-            .ToList()
-            .Sum(); // Sum it all up.
+                     return (isParsed) ? result : 0;
+                 })
+                 .ToList())
+             .Select(innerList => innerList.Aggregate((acc, num) => { Console.WriteLine(acc + " " + num); return acc * num; })) //Starting value of one, multiply the first value with second.
+             .ToList()
+             .Sum(); // Sum it all up.
 
         Console.WriteLine("Result is: " + result);
     }
 
     public void Part2()
     {
+        // Find each instances of:
+        // mul({value1}, {value2})
+        // do()
+        // don't
+        var regex = new Regex(@"mul\((\d+,\d+)\)|do\(\)|don't\(\)");
+        var extractedStrings = ExtractValues(new FileReader().ReadAllText(), regex);
 
+        //Console.WriteLine("Result is: " + result);
     }
 
-    // Online solution of getting values between markers.
-    static List<string> ExtractAllBetween(string input, string start, string end)
+    // Regex still taken off the internet :)
+    static List<string> ExtractValues(string input, Regex regex)
     {
-        List<string> matches = [];
-        int startIndex = 0;
+        List<string> values = []; // Just trying to remember how to use the new way of creating lists.
+        MatchCollection matches = regex.Matches(input);
 
-        while (startIndex < input.Length)
+        foreach (Match match in matches)
         {
-            // Find the next occurrence of the start marker
-            startIndex = input.IndexOf(start, startIndex);
-            if (startIndex == -1) break; // Stop if no more occurrences of "start" are found
-
-            // Find the next occurrence of the end marker *after* the start marker
-            int endIndex = input.IndexOf(end, startIndex + start.Length);
-            if (endIndex == -1) break; // Stop if no matching "end" is found
-
-            // Extract the substring between "start" and "end"
-            string match = input.Substring(startIndex + start.Length, endIndex - (startIndex + start.Length));
-            matches.Add(match);
-
-            // Move past this match to search for the next one
-            startIndex = endIndex + end.Length;
+            values.Add(match.Groups[1].Value);
         }
 
-        return matches;
+        return values;
     }
 }
 
