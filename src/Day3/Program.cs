@@ -4,20 +4,13 @@
 
 using Shared;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Transactions;
 
 
-
-
-//new Day3().Part1();
+new Day3().Part1();
 new Day3().Part2();
 
 Console.ReadKey();
-
-
 
 public class Day3
 {
@@ -109,57 +102,3 @@ public class Day3
     private static bool? IsDoOrDont(string input)
         => !(input == @do || input == dont) ?null : input == @do;
 }
-
-
-
-//.Select(x =>
-//{
-
-
-//    return new
-//    {
-//        Original = x, // Always keep the original value as a string,
-//        Command = x == @do ? @do : x == dont ? dont : null,
-//        Computed = (x == @do || x == dont) ? (int?)null :
-//                   x.Split(',', StringSplitOptions.RemoveEmptyEntries)
-//                    .Select(int.Parse)
-//                    .Aggregate((a, b) => a * b) // Keep it as an int
-//    };
-//});
-
-// Input made into format of:
-// 
-//var extractedValues = ExtractValues(new FileReader().ReadAllText(), regexPattern)
-//    .Select(x =>
-//    {
-
-
-//        return new
-//        {
-//            Original = x, // Always keep the original value as a string,
-//            Command = x == @do ? @do : x == dont ? dont : null,
-//            Computed = (x == @do || x == dont) ? (int?)null :
-//                       x.Split(',', StringSplitOptions.RemoveEmptyEntries)
-//                        .Select(int.Parse)
-//                        .Aggregate((a, b) => a * b) // Keep it as an int
-//        };
-//    });
-
-//var result = extractedValues.Aggregate((sum: 0, calculateNextValue: false), (acc, nextvalue) =>
-//{
-//    if (!acc.calculateNextValue)
-//        return (acc.sum, (nextvalue.Command != null ? nextvalue.Command : acc.calculateNextValue));
-
-//    return ((acc.sum + nextvalue.Computed), (nextvalue.Command != null ? nextvalue.Command : acc.calculateNextValue));
-//});
-
-
-//var result = extractedValues.Aggregate((sum: 0, calculateNextValue: false), (acc, nextvalue) =>
-//{
-//    if (!acc.calculateNextValue)
-//        return (acc.sum, nextvalue. == @do ? true : nextvalue == dont ? false : acc.calculateNextValue);
-
-//    var canConvert = int.TryParse(nextvalue, out var intValue);
-
-//    return canConvert ? (acc.sum + intValue, nextvalue == @do ? true : acc.calculateNextValue) : (acc.sum, acc.calculateNextValue);
-//});
